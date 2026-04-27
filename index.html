@@ -311,9 +311,9 @@ body {
 <body>
 
 <header class="site-header">
-  <h1>Diseño de Algoritmos</h1>
+  <h1>Algoritmos y Diseño de Datos II</h1>
   <p>ETSI Informática · Universidad de Sevilla</p>
-  <span class="badge">Clase 0 — ¿Por qué importa el algoritmo?</span>
+  <span class="badge">Motivación — ¿Por qué importa el algoritmo?</span>
 </header>
 
 <main class="app">
@@ -755,7 +755,7 @@ function runFib() {
   const n = +document.getElementById('fib-n').value;
   const data = [];
 
-  if (n <= 36) {
+  if (n <= 40) {
     const r = measure(() => fibNaive(n));
     data.push({ name: 'fib_naive', ms: r.ms, ops: `2^${n} ≈ ${(2**n).toLocaleString('es-ES')} llamadas` });
   } else {
