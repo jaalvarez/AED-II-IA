@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diseño de Algoritmos — Clase 0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0f1117;
+  --bg2:      #181c27;
+  --bg3:      #1e2333;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.15);
+  --text:     #e8eaf0;
+  --text2:    #8b91a8;
+  --text3:    #555d78;
+  --green:    #1fad82;
+  --green-bg: rgba(31,173,130,0.12);
+  --amber:    #e09928;
+  --amber-bg: rgba(224,153,40,0.12);
+  --red:      #e05a3a;
+  --red-bg:   rgba(224,90,58,0.12);
+  --blue:     #4a9eff;
+  --kw:       #a78bfa;
+  --fn:       #34d3c4;
+  --nm:       #fb923c;
+  --cm:       #555d78;
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Syne', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── HEADER ── */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-header h1 {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.site-header p {
+  font-size: 12px;
+  color: var(--text3);
+}
+.badge {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  color: var(--text2);
+}
+
+/* ── LAYOUT ── */
+.app { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg2);
+}
+.tab {
+  flex: 1;
+  padding: 9px 6px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text3);
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  border-right: 1px solid var(--border);
+  transition: all 0.15s;
+  text-align: center;
+}
+.tab:last-child { border-right: none; }
+.tab.active {
+  background: var(--bg3);
+  color: var(--text);
+}
+.tab:hover:not(.active) { color: var(--text2); background: var(--bg3); }
+
+/* ── PROBLEM AREAS ── */
+.problem-area { display: none; }
+.problem-area.active { display: block; }
+
+/* ── INTRO DESCRIPTION ── */
+.prob-desc {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  padding: 10px 14px;
+  border-left: 2px solid var(--blue);
+  background: rgba(74,158,255,0.06);
+  border-radius: 0 6px 6px 0;
+}
+
+/* ── CODE GRID ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+.code-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.code-block .lang {
+  font-size: 10px;
+  color: var(--text3);
+  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lang-dot { width: 6px; height: 6px; border-radius: 50%; }
+.dot-py  { background: #3b82f6; }
+.dot-cpp { background: #10b981; }
+
+.code-block pre {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text);
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.kw  { color: var(--kw); }
+.fn  { color: var(--fn); }
+.cm  { color: var(--cm); font-style: italic; }
+.nm  { color: var(--nm); }
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.controls label { font-size: 12px; color: var(--text2); }
+.controls input[type=range] {
+  -webkit-appearance: none;
+  width: 160px;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  outline: none;
+  border: 1px solid var(--border2);
+}
+.controls input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--green);
+  cursor: pointer;
+}
+.controls .n-val {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  min-width: 70px;
+}
+.run-btn {
+  margin-left: auto;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-family: var(--mono);
+  background: var(--green-bg);
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--green);
+  transition: all 0.15s;
+}
+.run-btn:hover { background: rgba(31,173,130,0.25); }
+.run-btn:active { transform: scale(0.97); }
+
+/* ── RESULT CARDS ── */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.result-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.3s;
+}
+.result-card.winner { border-color: var(--green); }
+.result-card .algo-name {
+  font-size: 10px;
+  color: var(--text3);
+  margin-bottom: 4px;
+  font-family: var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.result-card.winner .algo-name { color: var(--green); }
+.result-card .time-val { font-size: 22px; font-weight: 500; color: var(--text); }
+.result-card .time-unit { font-size: 11px; color: var(--text2); margin-left: 2px; }
+.result-card .ops-val { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+/* ── CHART ── */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  margin-bottom: 1.25rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+/* ── COMPLEXITY TABLE ── */
+.section-label {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 1rem 0 6px;
+}
+.complexity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.complexity-row:last-child { border-bottom: none; }
+.complexity-row .algo { font-size: 12px; font-family: var(--mono); flex: 0 0 200px; color: var(--text); }
+.complexity-row .big-o { font-size: 13px; font-weight: 500; font-family: var(--mono); min-width: 90px; }
+.bar-wrap { flex: 1; height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.o-bad  { color: var(--red); }
+.o-ok   { color: var(--amber); }
+.o-good { color: var(--green); }
+
+/* ── STATUS / INSIGHT ── */
+.status-line {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  min-height: 16px;
+  font-family: var(--mono);
+}
+.insight {
+  background: rgba(31,173,130,0.07);
+  border-left: 2px solid var(--green);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-top: 10px;
+}
+.insight strong { color: var(--green); font-weight: 500; }
+
+/* ── FOOTER ── */
+.site-footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 11px;
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Diseño de Algoritmos</h1>
+  <p>ETSI Informática · Universidad de Sevilla</p>
+  <span class="badge">Clase 0 — ¿Por qué importa el algoritmo?</span>
+</header>
+
+<main class="app">
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchProblem(0)">Fibonacci</button>
+    <button class="tab" onclick="switchProblem(1)">Búsqueda</button>
+    <button class="tab" onclick="switchProblem(2)">Ordenación</button>
+    <button class="tab" onclick="switchProblem(3)">Subcadena máx.</button>
+  </div>
+
+  <!-- ═══ FIBONACCI ═══ -->
+  <div class="problem-area active" id="p0">
+    <p class="prob-desc">
+      Calcular el n-ésimo número de Fibonacci. Un problema trivial que esconde una trampa:
+      la solución más obvia es <strong>exponencialmente</strong> peor que la óptima.
+    </p>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Recursivo ingenuo</div>
+        <pre><span class="kw">def</span> <span class="fn">fib_naive</span>(n):
+    <span class="cm"># O(2^n) — exponencial</span>
+    <span class="kw">if</span> n &lt;= <span class="nm">1</span>:
+        <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib_naive</span>(n-<span class="nm">1</span>) + <span class="fn">fib_naive</span>(n-<span class="nm">2</span>)</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Programación dinámica</div>
+        <pre><span class="kw">def</span> <span class="fn">fib_dp</span>(n):
+    <span class="cm"># O(n) — lineal</span>
+    <span class="kw">if</span> n &lt;= <span class="nm">1</span>: <span class="kw">return</span> n
+    a, b = <span class="nm">0</span>, <span class="nm">1</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> range(<span class="nm">2</span>, n+<span class="nm">1</span>):
+        a, b = b, a + b
+    <span class="kw">return</span> b</pre>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Recursivo ingenuo</div>
+        <pre><span class="kw">long long</span> <span class="fn">fib_naive</span>(<span class="kw">int</span> n) {
+    <span class="cm">// O(2^n)</span>
+    <span class="kw">if</span> (n &lt;= <span class="nm">1</span>) <span class="kw">return</span> n;
+    <span class="kw">return</span> <span class="fn">fib_naive</span>(n-<span class="nm">1</span>)
+         + <span class="fn">fib_naive</span>(n-<span class="nm">2</span>);
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · DP con memoización</div>
+        <pre><span class="kw">long long</span> memo[<span class="nm">100</span>] = {-<span class="nm">1</span>};
+<span class="kw">long long</span> <span class="fn">fib_dp</span>(<span class="kw">int</span> n) {
+    <span class="cm">// O(n)</span>
+    <span class="kw">if</span> (n &lt;= <span class="nm">1</span>) <span class="kw">return</span> n;
+    <span class="kw">if</span> (memo[n] != -<span class="nm">1</span>)
+        <span class="kw">return</span> memo[n];
+    <span class="kw">return</span> memo[n] =
+        <span class="fn">fib_dp</span>(n-<span class="nm">1</span>) + <span class="fn">fib_dp</span>(n-<span class="nm">2</span>);
+}</pre>
+      </div>
+    </div>
+    <div class="controls">
+      <label>n =</label>
+      <input type="range" min="5" max="40" value="30" step="1" id="fib-n"
+             oninput="document.getElementById('fib-n-val').textContent=this.value">
+      <span class="n-val" id="fib-n-val">30</span>
+      <button class="run-btn" onclick="runFib()">▶ Ejecutar</button>
+    </div>
+    <div class="results-grid" id="fib-results"></div>
+    <div class="chart-wrap"><canvas id="fib-chart"></canvas></div>
+    <div class="status-line" id="fib-status"></div>
+    <div class="section-label">complejidad comparada</div>
+    <div class="complexity-row">
+      <span class="algo">fib_naive</span>
+      <span class="big-o o-bad">O(2ⁿ)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--red);width:100%"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="algo">fib_dp</span>
+      <span class="big-o o-good">O(n)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--green);width:2%"></div></div>
+    </div>
+    <div class="insight">
+      La recursión ingenua recalcula los mismos subproblemas millones de veces.
+      Con <strong>n=40</strong>, <code>fib_naive</code> hace ≈2.000 millones de llamadas;
+      <code>fib_dp</code> hace exactamente <strong>38</strong>.
+    </div>
+  </div>
+
+  <!-- ═══ BÚSQUEDA ═══ -->
+  <div class="problem-area" id="p1">
+    <p class="prob-desc">
+      Encontrar un elemento en un array. Si el array está ordenado, podemos aprovecharlo
+      para saltar de O(n) a O(log n) — una diferencia abismal para millones de datos.
+    </p>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Búsqueda lineal</div>
+        <pre><span class="kw">def</span> <span class="fn">linear_search</span>(arr, target):
+    <span class="cm"># O(n)</span>
+    <span class="kw">for</span> i, v <span class="kw">in</span> enumerate(arr):
+        <span class="kw">if</span> v == target:
+            <span class="kw">return</span> i
+    <span class="kw">return</span> -<span class="nm">1</span></pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Búsqueda binaria</div>
+        <pre><span class="kw">def</span> <span class="fn">binary_search</span>(arr, target):
+    <span class="cm"># O(log n)</span>
+    lo, hi = <span class="nm">0</span>, len(arr) - <span class="nm">1</span>
+    <span class="kw">while</span> lo &lt;= hi:
+        mid = (lo + hi) // <span class="nm">2</span>
+        <span class="kw">if</span> arr[mid] == target:
+            <span class="kw">return</span> mid
+        <span class="kw">elif</span> arr[mid] &lt; target:
+            lo = mid + <span class="nm">1</span>
+        <span class="kw">else</span>: hi = mid - <span class="nm">1</span>
+    <span class="kw">return</span> -<span class="nm">1</span></pre>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Lineal</div>
+        <pre><span class="kw">int</span> <span class="fn">linear_search</span>(
+    vector&lt;<span class="kw">int</span>&gt;&amp; a, <span class="kw">int</span> t) {
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="nm">0</span>; i&lt;a.size(); i++)
+        <span class="kw">if</span> (a[i] == t) <span class="kw">return</span> i;
+    <span class="kw">return</span> -<span class="nm">1</span>;
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Binaria</div>
+        <pre><span class="kw">int</span> <span class="fn">binary_search</span>(
+    vector&lt;<span class="kw">int</span>&gt;&amp; a, <span class="kw">int</span> t) {
+    <span class="kw">int</span> lo=<span class="nm">0</span>, hi=a.size()-<span class="nm">1</span>;
+    <span class="kw">while</span> (lo &lt;= hi) {
+        <span class="kw">int</span> m = (lo+hi)/<span class="nm">2</span>;
+        <span class="kw">if</span> (a[m]==t) <span class="kw">return</span> m;
+        a[m]&lt;t ? lo=m+<span class="nm">1</span> : hi=m-<span class="nm">1</span>;
+    }
+    <span class="kw">return</span> -<span class="nm">1</span>;
+}</pre>
+      </div>
+    </div>
+    <div class="controls">
+      <label>n =</label>
+      <input type="range" min="1000" max="10000000" value="1000000" step="1000" id="search-n"
+             oninput="document.getElementById('search-n-val').textContent=Number(this.value).toLocaleString('es-ES')">
+      <span class="n-val" id="search-n-val">1.000.000</span>
+      <button class="run-btn" onclick="runSearch()">▶ Ejecutar</button>
+    </div>
+    <div class="results-grid" id="search-results"></div>
+    <div class="chart-wrap"><canvas id="search-chart"></canvas></div>
+    <div class="status-line" id="search-status"></div>
+    <div class="section-label">complejidad comparada</div>
+    <div class="complexity-row">
+      <span class="algo">linear_search</span>
+      <span class="big-o o-ok">O(n)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--amber);width:100%"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="algo">binary_search</span>
+      <span class="big-o o-good">O(log n)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--green);width:2%"></div></div>
+    </div>
+    <div class="insight">
+      Con <strong>n=1.000.000</strong>, la búsqueda lineal revisa hasta un millón de elementos;
+      la binaria necesita como máximo <strong>20 comparaciones</strong> (log₂ 1.000.000 ≈ 20).
+      Requisito: el array debe estar ordenado.
+    </div>
+  </div>
+
+  <!-- ═══ ORDENACIÓN ═══ -->
+  <div class="problem-area" id="p2">
+    <p class="prob-desc">
+      Ordenar un array. El algoritmo más intuitivo (bubble sort) es correcto pero cuadrático.
+      Divide y vencerás nos da O(n log n), que es el <em>óptimo teórico</em> para ordenación por comparación.
+    </p>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Bubble sort</div>
+        <pre><span class="kw">def</span> <span class="fn">bubble_sort</span>(arr):
+    <span class="cm"># O(n²)</span>
+    n = len(arr)
+    <span class="kw">for</span> i <span class="kw">in</span> range(n):
+        <span class="kw">for</span> j <span class="kw">in</span> range(<span class="nm">0</span>, n-i-<span class="nm">1</span>):
+            <span class="kw">if</span> arr[j] > arr[j+<span class="nm">1</span>]:
+                arr[j], arr[j+<span class="nm">1</span>] = \
+                arr[j+<span class="nm">1</span>], arr[j]</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Merge sort</div>
+        <pre><span class="kw">def</span> <span class="fn">merge_sort</span>(arr):
+    <span class="cm"># O(n log n)</span>
+    <span class="kw">if</span> len(arr) &lt;= <span class="nm">1</span>: <span class="kw">return</span> arr
+    mid = len(arr) // <span class="nm">2</span>
+    L = <span class="fn">merge_sort</span>(arr[:mid])
+    R = <span class="fn">merge_sort</span>(arr[mid:])
+    <span class="kw">return</span> <span class="fn">merge</span>(L, R)</pre>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Bubble sort</div>
+        <pre><span class="kw">void</span> <span class="fn">bubble_sort</span>(
+    vector&lt;<span class="kw">int</span>&gt;&amp; a) {
+    <span class="kw">int</span> n = a.size();
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>; i&lt;n; i++)
+      <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>; j&lt;n-i-<span class="nm">1</span>; j++)
+        <span class="kw">if</span>(a[j]>a[j+<span class="nm">1</span>])
+          swap(a[j], a[j+<span class="nm">1</span>]);
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · std::sort (introsort)</div>
+        <pre><span class="cm">// O(n log n) — STL incluido</span>
+sort(a.begin(), a.end());
+
+<span class="cm">// O(n log n) — merge manual</span>
+<span class="kw">void</span> <span class="fn">merge_sort</span>(
+    vector&lt;<span class="kw">int</span>&gt;&amp; a,
+    <span class="kw">int</span> l, <span class="kw">int</span> r) {
+  <span class="kw">if</span> (l >= r) <span class="kw">return</span>;
+  <span class="kw">int</span> m = (l+r)/<span class="nm">2</span>;
+  <span class="fn">merge_sort</span>(a, l, m);
+  <span class="fn">merge_sort</span>(a, m+<span class="nm">1</span>, r);
+  inplace_merge(
+    a.begin()+l,
+    a.begin()+m+<span class="nm">1</span>,
+    a.begin()+r+<span class="nm">1</span>);
+}</pre>
+      </div>
+    </div>
+    <div class="controls">
+      <label>n =</label>
+      <input type="range" min="100" max="20000" value="5000" step="100" id="sort-n"
+             oninput="document.getElementById('sort-n-val').textContent=Number(this.value).toLocaleString('es-ES')">
+      <span class="n-val" id="sort-n-val">5.000</span>
+      <button class="run-btn" onclick="runSort()">▶ Ejecutar</button>
+    </div>
+    <div class="results-grid" id="sort-results"></div>
+    <div class="chart-wrap"><canvas id="sort-chart"></canvas></div>
+    <div class="status-line" id="sort-status"></div>
+    <div class="section-label">complejidad comparada</div>
+    <div class="complexity-row">
+      <span class="algo">bubble_sort</span>
+      <span class="big-o o-bad">O(n²)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--red);width:100%"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="algo">merge_sort</span>
+      <span class="big-o o-good">O(n log n)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--green);width:13%"></div></div>
+    </div>
+    <div class="insight">
+      Con <strong>n=10.000</strong>, bubble_sort hace ~50M de comparaciones;
+      merge_sort hace ~132K. La diferencia de factor: <strong>n / log₂n ≈ 750×</strong>.
+      Ningún hardware compensa esa brecha.
+    </div>
+  </div>
+
+  <!-- ═══ KADANE ═══ -->
+  <div class="problem-area" id="p3">
+    <p class="prob-desc">
+      Dada una secuencia de enteros (positivos y negativos), encontrar la subcadena contigua
+      de suma máxima. El algoritmo de Kadane (1984) resuelve en O(n) lo que la fuerza bruta
+      hace en O(n³).
+    </p>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Fuerza bruta O(n³)</div>
+        <pre><span class="kw">def</span> <span class="fn">max_sub_brute</span>(a):
+    <span class="cm"># O(n³)</span>
+    best = a[<span class="nm">0</span>]
+    n = len(a)
+    <span class="kw">for</span> i <span class="kw">in</span> range(n):
+      <span class="kw">for</span> j <span class="kw">in</span> range(i, n):
+        s = sum(a[i:j+<span class="nm">1</span>])
+        best = max(best, s)
+    <span class="kw">return</span> best</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-py"></span>Python · Kadane O(n)</div>
+        <pre><span class="kw">def</span> <span class="fn">kadane</span>(a):
+    <span class="cm"># O(n) — 1 sola pasada</span>
+    best = cur = a[<span class="nm">0</span>]
+    <span class="kw">for</span> v <span class="kw">in</span> a[<span class="nm">1</span>:]:
+        cur = max(v, cur + v)
+        best = max(best, cur)
+    <span class="kw">return</span> best</pre>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Fuerza bruta</div>
+        <pre><span class="kw">int</span> <span class="fn">max_sub_brute</span>(
+    vector&lt;<span class="kw">int</span>&gt;&amp; a) {
+  <span class="kw">int</span> n=a.size(), best=a[<span class="nm">0</span>];
+  <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>; i&lt;n; i++)
+    <span class="kw">for</span>(<span class="kw">int</span> j=i; j&lt;n; j++){
+      <span class="kw">int</span> s=<span class="nm">0</span>;
+      <span class="kw">for</span>(<span class="kw">int</span> k=i; k&lt;=j; k++)
+        s += a[k];
+      best = max(best, s);
+    }
+  <span class="kw">return</span> best;
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="lang"><span class="lang-dot dot-cpp"></span>C++ · Algoritmo de Kadane</div>
+        <pre><span class="kw">int</span> <span class="fn">kadane</span>(vector&lt;<span class="kw">int</span>&gt;&amp; a) {
+    <span class="cm">// O(n)</span>
+    <span class="kw">int</span> best = a[<span class="nm">0</span>];
+    <span class="kw">int</span> cur  = a[<span class="nm">0</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="nm">1</span>;
+         i&lt;(<span class="kw">int</span>)a.size(); i++) {
+        cur  = max(a[i], cur+a[i]);
+        best = max(best, cur);
+    }
+    <span class="kw">return</span> best;
+}</pre>
+      </div>
+    </div>
+    <div class="controls">
+      <label>n =</label>
+      <input type="range" min="100" max="8000" value="2000" step="100" id="kad-n"
+             oninput="document.getElementById('kad-n-val').textContent=Number(this.value).toLocaleString('es-ES')">
+      <span class="n-val" id="kad-n-val">2.000</span>
+      <button class="run-btn" onclick="runKadane()">▶ Ejecutar</button>
+    </div>
+    <div class="results-grid" id="kad-results"></div>
+    <div class="chart-wrap"><canvas id="kad-chart"></canvas></div>
+    <div class="status-line" id="kad-status"></div>
+    <div class="section-label">complejidad comparada</div>
+    <div class="complexity-row">
+      <span class="algo">max_sub_brute</span>
+      <span class="big-o o-bad">O(n³)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--red);width:100%"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="algo">kadane</span>
+      <span class="big-o o-good">O(n)</span>
+      <div class="bar-wrap"><div class="bar-fill" style="background:var(--green);width:1%"></div></div>
+    </div>
+    <div class="insight">
+      Kadane es uno de los algoritmos más elegantes de la algoritmia clásica: con
+      <strong>una sola variable adicional</strong> y una única pasada resuelve en O(n)
+      lo que la fuerza bruta hace en O(n³). Con n=3.000: bruta ≈ 4.500M ops;
+      Kadane = <strong>3.000 ops</strong>. Factor: 1.500.000×.
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  ETSI Informática · Universidad de Sevilla · Diseño de Algoritmos
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+'use strict';
+
+const CHART_COLORS = {
+  bad:    '#e05a3a',
+  ok:     '#e09928',
+  good:   '#1fad82',
+  grid:   'rgba(255,255,255,0.06)',
+  text:   '#8b91a8',
+};
+
+let charts = {};
+
+/* ── helpers ── */
+function measure(fn) {
+  const t0 = performance.now();
+  const r  = fn();
+  return { ms: performance.now() - t0, result: r };
+}
+
+function switchProblem(idx) {
+  document.querySelectorAll('.problem-area').forEach((el, i) => el.classList.toggle('active', i === idx));
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', i === idx));
+}
+
+function renderCards(id, data) {
+  const minT = Math.min(...data.map(d => d.ms));
+  document.getElementById(id).innerHTML = data.map(d => {
+    const win = d.ms === minT;
+    const t = d.ms < 0.01 ? d.ms.toFixed(5) : d.ms < 1 ? d.ms.toFixed(3) : d.ms < 100 ? d.ms.toFixed(2) : d.ms.toFixed(1);
+    return `<div class="result-card${win ? ' winner' : ''}">
+      <div class="algo-name">${win ? '✓ ' : ''}${d.name}</div>
+      <div><span class="time-val">${t}</span><span class="time-unit">ms</span></div>
+      <div class="ops-val">${d.ops}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderChart(id, data, colors) {
+  const ctx = document.getElementById(id);
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.name),
+      datasets: [{
+        data: data.map(d => parseFloat(d.ms.toFixed(5))),
+        backgroundColor: colors,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          title: { display: true, text: 'tiempo (ms)', color: CHART_COLORS.text, font: { size: 11, family: "'JetBrains Mono', monospace" } },
+          grid: { color: CHART_COLORS.grid },
+          ticks: { color: CHART_COLORS.text, font: { size: 11 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: CHART_COLORS.text, font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+/* ── FIBONACCI ── */
+function fibNaive(n) { return n <= 1 ? n : fibNaive(n-1) + fibNaive(n-2); }
+function fibDP(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) { const c = a + b; a = b; b = c; }
+  return b;
+}
+
+function runFib() {
+  const n = +document.getElementById('fib-n').value;
+  const data = [];
+
+  if (n <= 36) {
+    const r = measure(() => fibNaive(n));
+    data.push({ name: 'fib_naive', ms: r.ms, ops: `2^${n} ≈ ${(2**n).toLocaleString('es-ES')} llamadas` });
+  } else {
+    data.push({ name: 'fib_naive (omitido)', ms: 0.0001, ops: 'demasiado lento para n > 36' });
+  }
+
+  const r2 = measure(() => fibDP(n));
+  data.push({ name: 'fib_dp', ms: Math.max(r2.ms, 0.00005), ops: `${n-1} iteraciones` });
+
+  renderCards('fib-results', data);
+  renderChart('fib-chart', data, [CHART_COLORS.bad, CHART_COLORS.good]);
+
+  const ratio = n <= 36 ? `${(data[0].ms / data[1].ms).toFixed(0)}×` : '∞';
+  document.getElementById('fib-status').textContent =
+    `fib(${n}) = ${fibDP(n).toLocaleString('es-ES')} | naive/dp ≈ ${ratio} más lento`;
+}
+
+/* ── BÚSQUEDA ── */
+function runSearch() {
+  const n = +document.getElementById('search-n').value;
+  document.getElementById('search-status').textContent = 'generando array…';
+  setTimeout(() => {
+    const arr = Array.from({ length: n }, (_, i) => i * 2);
+    const target = arr[Math.floor(Math.random() * n)];
+
+    const r1 = measure(() => { for (let i = 0; i < arr.length; i++) if (arr[i] === target) return i; return -1; });
+    const r2 = measure(() => {
+      let lo = 0, hi = arr.length - 1;
+      while (lo <= hi) { const m = (lo + hi) >> 1; if (arr[m] === target) return m; arr[m] < target ? lo = m + 1 : hi = m - 1; }
+      return -1;
+    });
+
+    const data = [
+      { name: 'linear_search', ms: Math.max(r1.ms, 0.001), ops: `hasta ${n.toLocaleString('es-ES')} comparaciones` },
+      { name: 'binary_search', ms: Math.max(r2.ms, 0.0001), ops: `≤ ${Math.ceil(Math.log2(n))} comparaciones` },
+    ];
+    renderCards('search-results', data);
+    renderChart('search-chart', data, [CHART_COLORS.ok, CHART_COLORS.good]);
+    document.getElementById('search-status').textContent =
+      `log₂(${n.toLocaleString('es-ES')}) = ${Math.ceil(Math.log2(n))} pasos máx | ratio ≈ ${(r1.ms / Math.max(r2.ms, 0.0001)).toFixed(0)}×`;
+  }, 30);
+}
+
+/* ── ORDENACIÓN ── */
+function runSort() {
+  const n = +document.getElementById('sort-n').value;
+  document.getElementById('sort-status').textContent = 'generando array…';
+  setTimeout(() => {
+    const base = Array.from({ length: n }, () => Math.random() * 100000 | 0);
+
+    const a1 = [...base];
+    const r1 = measure(() => {
+      for (let i = 0; i < a1.length; i++)
+        for (let j = 0; j < a1.length - i - 1; j++)
+          if (a1[j] > a1[j+1]) { const t = a1[j]; a1[j] = a1[j+1]; a1[j+1] = t; }
+    });
+
+    const a2 = [...base];
+    const r2 = measure(() => a2.sort((a, b) => a - b));
+
+    const n2   = n * n;
+    const nlogn = Math.round(n * Math.log2(n));
+    const data = [
+      { name: 'bubble_sort', ms: r1.ms, ops: `~${(n2/2).toLocaleString('es-ES')} ops` },
+      { name: 'merge_sort',  ms: Math.max(r2.ms, 0.001), ops: `~${nlogn.toLocaleString('es-ES')} ops` },
+    ];
+    renderCards('sort-results', data);
+    renderChart('sort-chart', data, [CHART_COLORS.bad, CHART_COLORS.good]);
+    document.getElementById('sort-status').textContent =
+      `n² = ${n2.toLocaleString('es-ES')} ops  vs  n·log₂n = ${nlogn.toLocaleString('es-ES')} ops | ratio ≈ ${(r1.ms / data[1].ms).toFixed(0)}×`;
+  }, 30);
+}
+
+/* ── KADANE ── */
+function runKadane() {
+  const n = +document.getElementById('kad-n').value;
+  document.getElementById('kad-status').textContent = 'generando array…';
+  setTimeout(() => {
+    const arr = Array.from({ length: n }, () => (Math.random() * 200 | 0) - 100);
+
+    let r1ms;
+    if (n <= 2500) {
+      const r1 = measure(() => {
+        let best = arr[0];
+        for (let i = 0; i < n; i++)
+          for (let j = i; j < n; j++) {
+            let s = 0;
+            for (let k = i; k <= j; k++) s += arr[k];
+            if (s > best) best = s;
+          }
+        return best;
+      });
+      r1ms = r1.ms;
+    } else {
+      r1ms = (n ** 3 / 6) * 0.000_000_08;
+    }
+
+    const r2 = measure(() => {
+      let best = arr[0], cur = arr[0];
+      for (let i = 1; i < n; i++) { cur = Math.max(arr[i], cur + arr[i]); best = Math.max(best, cur); }
+      return best;
+    });
+
+    const data = [
+      { name: `brute O(n³)${n > 2500 ? ' (est.)' : ''}`, ms: Math.max(r1ms, 0.001), ops: `~${Math.round(n**3/6).toLocaleString('es-ES')} ops` },
+      { name: 'kadane O(n)', ms: Math.max(r2.ms, 0.00005), ops: `${n.toLocaleString('es-ES')} ops` },
+    ];
+    renderCards('kad-results', data);
+    renderChart('kad-chart', data, [CHART_COLORS.bad, CHART_COLORS.good]);
+    document.getElementById('kad-status').textContent =
+      `factor teórico ≈ ${Math.round(n**2/6).toLocaleString('es-ES')}× | n = ${n.toLocaleString('es-ES')}`;
+  }, 30);
+}
+
+/* auto-run primer tab */
+runFib();
+</script>
+</body>
+</html>
